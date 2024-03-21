@@ -23,8 +23,9 @@ jobs: # 작업 정의
               }
 
               const pr_body = pull_request.body;
+              const message = "<!--" || "-->";
 
-              if (!pr_body) { // PR 내용이 비어 있다면
+              if (!pr_body || message) { // PR 내용이 비어 있다면
                 // PR에 코멘트 추가
                 await github.rest.issues.createComment({
                   owner: context.repo.owner,
