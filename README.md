@@ -18,7 +18,20 @@ npm install formatted-data
 ## 사용법
 
 ```js
-const formattedData = require("formatted-data");
+import { formattedData } from "formatted-data.js";
+
+const test = formattedData({
+    id: 1,
+    category_id: 1,
+    ...
+})
+
+/* output [{
+    id: 1,
+    categoryId: 1,
+    ...
+}] */
+
 ```
 
 ## 기여하기
