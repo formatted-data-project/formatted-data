@@ -13,6 +13,6 @@
 - [ ] item
 - [ ] item
 
-<!-- 연결되는 Issue를 추가해주세요! -->
+<!-- 연결되는 Issue를 추가해주세요. -->
 
 ## issue number
