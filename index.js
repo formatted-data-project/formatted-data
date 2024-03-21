@@ -1,0 +1,1 @@
+export { formattedData } from "./src/formatData.js";
