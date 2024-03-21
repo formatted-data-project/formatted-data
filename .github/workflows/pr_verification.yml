@@ -6,37 +6,41 @@ on: # 워크 플로우 실행 트리거
 
 jobs: # 작업 정의
   check:
-    runs-on: ubuntu-lastest # 우분투 환경
-    permissions: #권한 설정
+    runs-on: ubuntu-latest # 우분투 환경
+    permissions: # 권한 설정
       pull-requests: write # PR 쓰기 권한 설정
     steps: # 실제로 실행되는 작업 단계
-      - name: Check PR Body and Close if Empty # 작업 이름 추가
+      - name: Check PR Body and Close if Empty
         uses: actions/github-script@v7
         with:
-          script: | # 스크립트 시작
-            const pull_request = context.payload.pull_request; #pull_request 객체 가져오기
+          script: |
+            async function run() { // async 함수로 감싸줍니다.
+              const pull_request = context.payload.pull_request; // pull_request 객체 가져오기
 
-            if (pull_requst === undefined) {  # pull_requst가 없는 경우
-              console.log("The corresponding PR cannot be verified.")
-              return;
-            }
+              if (pull_request === undefined) { // pull_request가 없는 경우
+                console.log("The corresponding PR cannot be verified.")
+                return;
+              }
 
-            const pr_body = pull_requst.body;
+              const pr_body = pull_request.body;
 
-            if(!pr_body) { //PR 내용이 비어 있다면
-                //PR에 코멘트 추가
+              if (!pr_body) { // PR 내용이 비어 있다면
+                // PR에 코멘트 추가
                 await github.rest.issues.createComment({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    issue_number: pull_requst.number,
-                    body: "해당 pull request는 가이드라인을 준수하지 않아 close 처리가 되었습니다. 가이드라인을 준수해서 다시 pull request를 요청해주세요.😉"  
-                })
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pull_request.number,
+                  body: "해당 pull request는 가이드라인을 준수하지 않아 close 처리가 되었습니다. 가이드라인을 준수해서 다시 pull request를 요청해주세요.😉"
+                });
 
-                //해당 PR을 닫습니다.
+                // 해당 PR을 닫습니다.
                 await github.rest.pulls.update({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    pull_number: pull_requst.number,
-                    state: "closed"
-                })
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pull_request.number,
+                  state: "closed"
+                });
+              }
             }
+
+            run(); // 함수 실행
